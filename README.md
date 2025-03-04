@@ -1,6 +1,7 @@
 # Full-length human image generation using diffusion models.
-** Author: ** Kazachkov Daniil
-** Supervisor: ** Filatov Andrew
+
+**Author:** Kazachkov Daniil <br>
+**Supervisor:** Filatov Andrew
 
 ## Problem Statement
 Наша главная цель - расширить область применения диффузионных моделей в генерации высококачественных изображений. Мы проверяем гипотезу о том, что подходы в работах [PuLID](https://github.com/ToTheBeginning/PuLID), [InstantID](https://instantid.github.io/), [IP-Adapter](https://ip-adapter.github.io/) распространяются не только на аватары лиц, но и на ростовые. Мы достигаем этого изменением датасета и энкодера, принимающего на вход референсную картинку пользователя.
