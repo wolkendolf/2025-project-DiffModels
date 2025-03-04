@@ -1,1 +1,13 @@
-# 2025-project-DiffModels
+# Full-length human image generation using diffusion models.
+** Author: ** Kazachkov Daniil
+** Supervisor: ** Filatov Andrew
+
+## Problem Statement
+Наша главная цель - расширить область применения диффузионных моделей в генерации высококачественных изображений. Мы проверяем гипотезу о том, что подходы в работах [PuLID](https://github.com/ToTheBeginning/PuLID), [InstantID](https://instantid.github.io/), [IP-Adapter](https://ip-adapter.github.io/) распространяются не только на аватары лиц, но и на ростовые. Мы достигаем этого изменением датасета и энкодера, принимающего на вход референсную картинку пользователя.
+Отдельной частью эксперимента является попытка подобрать лучший метод для выделения тела человека (BodyID) с картинки. 
+
+## Run experiments
+TODO
+
+## Citation
+TODO
