@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "genavatorsmodip-adapter"
+version = "0.1.0"
+description = "Main contributor: Kazachkov Daniil; Consultant: Andrey Filatov."
+authors = ["wolkendolf <kazachkovdaniil.rb@gmail.com>"]
+readme = "README.md"
+packages = [{include = "genavatorsmodip_adapter"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+fire = "^0.7.0"
+pre-commit = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
