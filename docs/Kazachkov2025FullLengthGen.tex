@@ -229,7 +229,21 @@
 
 	\subsection{Results}
 		Ниже будет представлен макет таблицы с результатами эксперимента.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\textwidth]{images/test_fig_compare.png} % путь к файлу
+			\label{fig:test_fig_compare}
+		\end{figure}
 
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\textwidth]{images/test_quantitve_compare.png} % путь к файлу
+			\label{fig:test_quantitve_compare}
+		\end{figure}
+		\textbf{Body Sim.} представляет собой косинусное сходство ID, извлеченными с помощью (?). \textbf{CLIP-T} [link] измеряет способность следовать подсказкам.
+		\textbf{CLIP-I} для количественной оценки сходства изображений CLIP между двумя изображениями до и после вставки идентификатора.
+		Более высокая метрика CLIP-I указывает на меньшее изменение элементов изображения (таких как фон, композиция, стиль) после вставки идентификатора,
+		что говорит о меньшей степени нарушения поведения исходной модели.
 
 	\nocite{*}
 		\bibliographystyle{unsrt} % Use a numbered bibliography style
