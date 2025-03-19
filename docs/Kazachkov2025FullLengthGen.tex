@@ -171,20 +171,68 @@
 
 \begin{document}
 	\maketitle
-
 	\section{Abstract}
-		Существующие инструменты для генерации персонализированных изображений, используют лишь лицо пользователя.
-		В данной работе мы представляем архитектуру \textit{BoLID} - решение для интеграции данных всего тела, позволяющее достигать более точной персонализации по сравнению с методами, учитывающими лишь лицо.
+
+		В данной работе мы представляем архитектуру \textit{BoLID} - решение для интеграции body identity, позволяющее достигать более точной персонализации по сравнению с методами, учитывающими лишь лицо.
 		Основные изменения заключены в энкодере пользовательского изображения.
 
 	$\mathbf{keywords:}$ Machine Learning, Diffusion Models.
 
 	\section{Introduction}
+		Большой вклад в область генерации изображений внесли такие модели, как U-Net[link], DALL-E 2 [link], Imagen [link], Stable Diffusion [link].
+		Сначала пользователи смогли получать картинки по текстовому промту, что является сильным ограничением. В DALLE-2 [link] пошли дальше и сделали попытку встроить изображение в диффузионную модель.
+		Дальнейшее развитие архитектур привело к созданию легковесных адаптеров, например IP-Adapter [link], разделяющих механизм cross-attention для текстовых
+		признаков и признаков изображения. Это позволило ввести элементы контроля генерации, подобно ControlNet [link], и использовать other custom models fine-tuned from the same base model.
+		В работе InstantID [link] и PuLID [link] авторы включают дополнительный контроль за facial и landmark identity (ID), что дает сильный прирост в ID fidelity.
 
-	% \nocite{*}
-    %     \bibliographystyle{unsrt} % Use a numbered bibliography style
-    %     \bibliography{references.bib}
+		Однако каждая из этих работ концентрируется лишь на учете особенностей лица, когда как тело пользователя остается без внимания.
+		В данной работе я устраняю этот недостаток, встраивая в процесс генерации bodyID пользователя. Важной задачей является выделение значимых деталей с референсных изображений.
+		Как в InstantID restrict yourself	to five key face points for a more generalized constraint, так и мы выделяем 12 points для туловища, что позволяет учитывать пропорции и форму тела.
+		Для улучшения ID similarity мы дообучаем модель на датасетах, сгруппированных по уникальным идентификаторам пользователя, где каждый ID представлен серией снимков из разных ракурсов.
+		Это обеспечивает более целостную генерацию, основанную на единичной входной фотографии, сохраняя физические пропорции пользователя вместе с его чертами лица.
+
+		Ключевые изменения касаются двух модулей:
+		\begin{enumerate}
+			\item \textbf{Body-ID Encoder}, обучаемый экстрагировать особенности тела (body landmarks), аналогично подходу InstantID~\cite{wang2024instantid}, но для 12 основных ключевых точек туловища.
+			\item \textbf{Body-Condition Module}, действующий как адаптер, схожий с IP-Adapter~\cite{ye2023ip-adapter}, где \textit{cross-attention} разделяется между признаками текста, лица и тела пользователя.
+		\end{enumerate}
+
+		\subsection{Loss Functions and Training Objective}
+		\begin{itemize}
+			\item \textbf{Reconstruction Loss:} минимизирует расхождение между сгенерированным изображением и референсным образцом при наличии настраиваемого условия (bodyID).
+			\item \textbf{Identity Consistency Loss:} аналогично InstantID~\cite{wang2024instantid}, но расширено до корпуса и основных точек тела, для обеспечения правильной пропорциональности.
+			\item \textbf{CLIP-based Similarity Loss:} использует EVA-CLIP~\cite{sun2023evaclipimprovedtrainingtechniques} для обеспечения семантической близости к заданному тексту и общему стилю входного изображения.
+		\end{itemize}
+
+	\section{Related Works}
+		[Будет заполнено позже]
+
+	\section{Method}
+		[будет заполнено позже]
+
+	\section{Computational experiment}
+	\subsection{Implementation Details}
+		Мы строим нашу модель на основе SDXL \citep{podell2023sdxlimprovinglatentdiffusion} и (?) шагов SDXL-Lightning \citep{lin2024-sdxllightning}. Для ID encoder мы используем (?)
+		как модель распознавания тела, и EVA-CLIP \citep{sun2023evaclipimprovedtrainingtechniques} как CLIP Image encoder. Наш датасет состоит из приблизительно 50 тысяч картинок
+		высокого разрешения, собранных из интернета, с подписями, автоматически сгенерированными с помощью BLIP-2 \citep{pmlr-v202-li23q} суммарно. Наш процесс обучения состоит из (?) шагов.
+
+		\textbf{[при получении финальной модели этот раздел будет дописан]}
+
+	\subsection{Basic experiment description}
+		Бейзлайном выступает модель
+
+	\subsection{Dataset}
+		Поскольку наша цель - встроить тело пользователя, важно дообучить модель на множестве ракурсов одного человека.
+		Поэтому в качестве датасета были выбраны высококачественные (с разрешением не менее $1000\times 1000$ px) фотографии знаменитостей. Для каждого человека собирался пакет из
+		не менее 100 фотографий с сайта \href{https://www.theplace.ru/photos/}{theplace} с помощью написанного \href{https://github.com/wolkendolf/2025-project-DiffModels/tree/main/parser}{парсера}.
+		Датасет доступен по \href{https://drive.google.com/drive/folders/1gP83US8DSw-OM0Fc1MlOYFVd0QJ7oJmy?usp=sharing}{ссылке}.
+
+	\subsection{Results}
+		Ниже будет представлен макет таблицы с результатами эксперимента.
+
+
+	\nocite{*}
+		\bibliographystyle{unsrt} % Use a numbered bibliography style
+		\bibliography{references.bib}
 	% \printbibliography
-
-
 \end{document}
