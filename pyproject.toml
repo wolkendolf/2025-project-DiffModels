@@ -8,6 +8,14 @@ packages = [{include = "genavatorsmodip_adapter"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+diffusers = {git = "https://github.com/huggingface/diffusers.git"}
+torch = "^2.6.0"
+torchvision = "^0.21.0"
+torchaudio = "^2.6.0"
+transformers = "^4.50.1"
+accelerate = "^1.5.2"
+safetensors = "^0.5.3"
+qwen-vl-utils = "^0.0.10"
 
 
 [tool.poetry.group.dev.dependencies]
