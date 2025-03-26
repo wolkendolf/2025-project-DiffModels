@@ -4,19 +4,26 @@ from PIL import Image
 import torch
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
 from qwen_vl_utils import process_vision_info
+from accelerate import Accelerator
+
+accelerator = Accelerator(cpu=True)
 
 # Load the model and processor (adjust torch_dtype and device_map as needed)
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    "Qwen/Qwen2.5-VL-7B-Instruct", torch_dtype="auto", device_map="auto"
+    "Qwen/Qwen2.5-VL-7B-Instruct", torch_dtype=torch.bfloat16, device_map="cpu"
 )
-processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct")
+processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct", use_fast=True)
+
+# Move model to the accelerator (it will automatically use all available GPUs)
+model = accelerator.prepare(model)
 
 # Ensure the model is on the correct device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 model.to(device)
 
 # Base directory containing your images
-base_dir = "popstars/train"
+base_dir = "/data/kazachkovda/popstars/train"
 
 # Gather all image file paths (you can extend the extensions if needed)
 image_files = []
@@ -59,11 +66,10 @@ for image_path in image_files:
     text_prompt = processor.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True
     )
-    image_inputs, video_inputs = process_vision_info(messages)
+    image_inputs, _ = process_vision_info(messages)
     inputs = processor(
         text=[text_prompt],
         images=image_inputs,
-        videos=video_inputs,
         padding=True,
         return_tensors="pt",
     )
@@ -80,13 +86,13 @@ for image_path in image_files:
         generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
     )[0]
 
-    # Create = os.path.basename(image_path)
+    file_name = os.path.basename(image_path)
     entry = {
         "file_name": file_name,
         "text": output_text
     }
     metadata.append(entry)
-    print(f"Processed {file_name}: {output_text}")
+    print(f"Processed {file_name}")
 
 # Write the metadata to a JSON Lines file (one JSON object per line)
 output_file = "metadata.jsonl"
