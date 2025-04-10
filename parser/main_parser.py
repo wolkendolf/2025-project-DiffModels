@@ -5,6 +5,11 @@ import parser.parsing_helper as parsing_helper
 import requests
 from bs4 import BeautifulSoup
 
+# Константа для базовой папки
+BASE_DATASET_PATH = (
+    "/home/jovyan/home/jovyan/kazachkovda/2025-project-DiffModels/dataset"
+)
+
 
 def get_images_number(person_page_url, headers=None, delay=0):
     """
@@ -108,6 +113,22 @@ def parser_main(
                     if person_page_url.startswith("/"):
                         person_page_url = base_url + person_page_url
 
+                    # Проверка существующей папки и количества файлов
+                    subfolder_name = person_page_url.rstrip("/").split("/")[-1]
+                    folder_path = os.path.join(BASE_DATASET_PATH, subfolder_name)
+
+                    if os.path.exists(folder_path):
+                        existing_files = sum(
+                            1
+                            for f in os.listdir(folder_path)
+                            if os.path.isfile(os.path.join(folder_path, f))
+                        )
+                        if existing_files >= max_images:
+                            print(
+                                f"Skip {subfolder_name}: maximum photos already downloaded"
+                            )
+                            continue
+
                     # Переходим на страницу личности, проверяем количество фотографий
                     enough_images = get_images_number(
                         person_page_url, headers=headers, delay=delay
@@ -118,7 +139,8 @@ def parser_main(
                             page_url=person_page_url,
                             base_url=base_url,
                             visited_pages=visited_pages,
-                            folder=str(person_page_url.rstrip("/").split("/")[-1]),
+                            folder=folder_path,
+                            subfolder_name=subfolder_name,
                             max_images=max_images,
                             total_downloaded=0,
                             delay=delay,
@@ -154,6 +176,10 @@ def main(
     if user_agent:
         headers["User-Agent"] = user_agent
 
+    # Создаем базовую папку, если её нет
+    if not os.path.exists(BASE_DATASET_PATH):
+        os.makedirs(BASE_DATASET_PATH)
+
     parser_main(
         page_url=start_url,
         base_url=base_url,
@@ -170,7 +196,7 @@ if __name__ == "__main__":
     main(
         start_url,
         min_images=200,
-        max_images=500,
+        max_images=600,
         max_persons=500,
         delay=0.2,
     )

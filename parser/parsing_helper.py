@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def download_image(img_url, folder="images"):
+def download_image(img_url, folder, subfolder_name, idx):
     """
     Скачивает изображение по прямой ссылке img_url и сохраняет в папку folder.
     Возвращает True, если скачивание прошло успешно, иначе False.
@@ -15,11 +15,12 @@ def download_image(img_url, folder="images"):
         os.makedirs(folder)
 
     # Пытаемся извлечь имя файла из ссылки
-    filename = img_url.split("/")[-1]
+    # filename = img_url.split("/")[-1]
     # Если оно пустое или слишком короткое, можно придумать своё
-    if not filename or "." not in filename:
-        filename = f"{folder}{int(time.time())}.jpg"
+    # if not filename or "." not in filename:
+    #     filename = f"{folder}{int(time.time())}.jpg"
 
+    filename = f"{subfolder_name}{idx}.jpg"
     filepath = os.path.join(folder, filename)
 
     # Скачиваем файл
@@ -42,9 +43,6 @@ def get_fullsize_image_url(image_page_url, headers=None, delay=0):
     Заходит на страницу конкретного изображения (image_page_url),
     ищет тег <img> по заданному пути (JS-path), и возвращает его src.
     """
-    import time
-    from bs4 import BeautifulSoup
-    import requests
 
     # Задержка (если нужно), чтобы снизить риск бана
     time.sleep(delay)
@@ -78,7 +76,8 @@ def parse_page(
     page_url,
     base_url,
     visited_pages,
-    folder="images",
+    folder,
+    subfolder_name,
     max_images=None,
     total_downloaded=0,
     delay=0,
@@ -120,7 +119,20 @@ def parse_page(
         if gallery_block:
             # Находим все <a> внутри блока
             image_links = gallery_block.find_all("a", href=True)
-            for a_tag in image_links:
+
+            # Определяем начальный индекс на основе существующих файлов
+            existing_files = (
+                [
+                    f
+                    for f in os.listdir(folder)
+                    if os.path.isfile(os.path.join(folder, f))
+                ]
+                if os.path.exists(folder)
+                else []
+            )
+            start_idx = len(existing_files)
+
+            for idx, a_tag in enumerate(image_links, start=start_idx):
                 # Если достигли лимита скачиваний, завершаем
                 if max_images is not None and total_downloaded >= max_images:
                     print("Достигнут лимит скачивания изображений.")
@@ -144,7 +156,7 @@ def parse_page(
                     # Задержка перед скачиванием (можно объединить с общей задержкой выше)
                     time.sleep(delay)
 
-                    success = download_image(fullsize_url, folder=folder)
+                    success = download_image(fullsize_url, folder, subfolder_name, idx)
                     if success:
                         total_downloaded += 1
 
@@ -163,10 +175,7 @@ def parse_page(
                     href = link["href"]
                     # Ищем ссылки вида "?page=n" или "/photos/tom_hardy/?page=n"
                     # Если ссылка относительная, приводим к абсолютной
-                    if href.startswith("/"):
-                        next_page_url = base_url + href
-                    else:
-                        next_page_url = href
+                    next_page_url = base_url + href if href.startswith("/") else href
 
                     # Рекурсивно обходим следующие страницы
                     total_downloaded = parse_page(
@@ -174,6 +183,7 @@ def parse_page(
                         base_url,
                         visited_pages,
                         folder=folder,
+                        subfolder_name=subfolder_name,
                         max_images=max_images,
                         total_downloaded=total_downloaded,
                         delay=delay,
@@ -187,48 +197,3 @@ def parse_page(
         print(f"Ошибка при загрузке {page_url}: {e}")
 
     return total_downloaded
-
-
-# def parser_photo(start_url, folder="images", max_images=None, delay=0, user_agent=None):
-#     """
-#     Главная функция:
-#     - start_url: начальный URL (например, https://www.theplace.ru/photos/tom_hardy/)
-#     - folder: папка для сохранения
-#     - max_images: ограничение на количество скачиваемых изображений (int или None)
-#     - delay: задержка в секундах между запросами (int или float)
-#     - user_agent: строка User-Agent (если нужна для обхода блокировок)
-#     """
-#     # Определим базовый URL, чтобы корректно строить абсолютные ссылки
-#     # Для theplace.ru: "https://www.theplace.ru"
-#     # Можно извлечь, например, через разбор start_url, но для упрощения укажем вручную.
-#     base_url = "https://www.theplace.ru"
-
-#     headers = {}
-#     if user_agent:
-#         headers["User-Agent"] = user_agent
-
-#     visited_pages = set()
-#     total_downloaded = parse_page(
-#         page_url=start_url,
-#         base_url=base_url,
-#         visited_pages=visited_pages,
-#         folder=folder,
-#         max_images=max_images,
-#         total_downloaded=0,
-#         delay=delay,
-#         headers=headers,
-#     )
-
-#     print(f"Всего скачано изображений: {total_downloaded}")
-
-
-# if __name__ == "__main__":
-#     # Пример запуска:
-#     # Скачаем не более 10 изображений, задержка 2 секунды, пользовательский User-Agent
-#     start_url = "https://www.theplace.ru/photos/selena_gomez/"
-#     main(
-#         start_url,
-#         folder="selenagomez",
-#         max_images=2000,
-#         delay=0.2,
-#     )

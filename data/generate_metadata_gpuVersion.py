@@ -2,7 +2,7 @@
 import os
 
 # Set the visible GPUs. Note that after this, GPU 0 in your process will be physical GPU 3.
-os.environ["CUDA_VISIBLE_DEVICES"] = "1,3,6,7"  # Put this at the very top!
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"  # Put this at the very top!
 # os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128,expandable_segments:True"
 
 import json
@@ -15,19 +15,14 @@ from qwen_vl_utils import process_vision_info
 accelerator = Accelerator()
 
 # These keys are the local device ids (0, 1, 2, 3).
-max_memory = {
-    0: "6GiB",
-    1: "6GiB",
-    2: "6GiB",
-    3: "6GiB"
-}
+# max_memory = {7: "30Gib"}
 
 # Load the model using a GPU-friendly data type and let device_map auto-distribute layers across available GPUs.
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     "Qwen/Qwen2.5-VL-7B-Instruct",
-    torch_dtype=torch.float16,         # Use torch.float16 for GPU compatibility
-    device_map="auto",                    # Let Hugging Face distribute the layers
-    max_memory=max_memory
+    torch_dtype=torch.float16,  # Use torch.float16 for GPU compatibility
+    device_map="auto",  # Let Hugging Face distribute the layers
+    # max_memory=max_memory,
 )
 processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct", use_fast=True)
 
@@ -46,7 +41,7 @@ for root, dirs, files in os.walk(base_dir):
 
 # Partition the workload among processes if running multi-GPU distributed
 if accelerator.num_processes > 1:
-    image_files = image_files[accelerator.process_index::accelerator.num_processes]
+    image_files = image_files[accelerator.process_index :: accelerator.num_processes]
 
 metadata = []
 
@@ -75,7 +70,9 @@ for image_path in image_files:
     ]
 
     # Prepare the input text and image tensors
-    text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    text_prompt = processor.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
+    )
     image_inputs, _ = process_vision_info(messages)
     inputs = processor(
         text=[text_prompt],
@@ -87,8 +84,15 @@ for image_path in image_files:
 
     with torch.no_grad():
         generated_ids = model.generate(**inputs, max_new_tokens=128)
-    generated_ids_trimmed = [out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)]
-    output_text = processor.batch_decode(generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+    generated_ids_trimmed = [
+        out_ids[len(in_ids) :]
+        for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+    ]
+    output_text = processor.batch_decode(
+        generated_ids_trimmed,
+        skip_special_tokens=True,
+        clean_up_tokenization_spaces=False,
+    )[0]
 
     file_name = os.path.basename(image_path)
     metadata.append({"file_name": file_name, "text": output_text})

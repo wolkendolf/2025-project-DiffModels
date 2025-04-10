@@ -1,27 +1,10 @@
-[tool.poetry]
-name = "genavatorsmodip-adapter"
+[project]
+name = "2025-project-diffmodels"
 version = "0.1.0"
-description = "Main contributor: Kazachkov Daniil; Consultant: Andrey Filatov."
-authors = ["wolkendolf <kazachkovdaniil.rb@gmail.com>"]
+description = "Add your description here"
 readme = "README.md"
-packages = [{include = "genavatorsmodip_adapter"}]
-
-[tool.poetry.dependencies]
-python = "^3.11"
-diffusers = {git = "https://github.com/huggingface/diffusers.git"}
-torch = "^2.6.0"
-torchvision = "^0.21.0"
-torchaudio = "^2.6.0"
-transformers = "^4.50.1"
-accelerate = "^1.5.2"
-safetensors = "^0.5.3"
-qwen-vl-utils = "^0.0.10"
-
-
-[tool.poetry.group.dev.dependencies]
-fire = "^0.7.0"
-pre-commit = "^4.1.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4>=4.13.3",
+    "requests>=2.32.3",
+]
