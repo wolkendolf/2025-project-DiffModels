@@ -5,9 +5,11 @@ import requests
 from bs4 import BeautifulSoup
 import random
 
-BASE_DATASET_PATH = (
-    "/home/jovyan/home/jovyan/kazachkovda/2025-project-DiffModels/dataset"
-)
+BASE_DATASET_PATH = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/dataset"
+
+"""
+start with command python -m parser.main_parser_random from 2025-project-diffmodels folder
+"""
 
 
 def get_images_number(person_page_url, headers=None, delay=0):
@@ -162,8 +164,8 @@ if __name__ == "__main__":
     start_url = "https://www.theplace.ru/photos/"
     main(
         start_url,
-        min_images=200,
-        max_images=600,
-        max_persons=500,
+        min_images=150,
+        max_images=200,
+        max_persons=200,
         delay=0.2,
     )

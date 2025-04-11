@@ -6,9 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Константа для базовой папки
-BASE_DATASET_PATH = (
-    "/home/jovyan/home/jovyan/kazachkovda/2025-project-DiffModels/dataset"
-)
+BASE_DATASET_PATH = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels"
 
 
 def get_images_number(person_page_url, headers=None, delay=0):

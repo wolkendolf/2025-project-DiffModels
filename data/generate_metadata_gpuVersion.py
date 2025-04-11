@@ -1,4 +1,3 @@
-# Force usage of GPUs 0, 1, 2, and 3 by setting the environment variable:
 import os
 
 # Set the visible GPUs. Note that after this, GPU 0 in your process will be physical GPU 3.
@@ -30,7 +29,7 @@ processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct", use_fas
 model = accelerator.prepare(model)
 
 # Base directory with your images
-base_dir = "/data/kazachkovda/popstars/train"
+base_dir = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/dataset"
 
 # Gather image file paths
 image_files = []
@@ -61,8 +60,7 @@ for image_path in image_files:
                 {
                     "type": "text",
                     "text": (
-                        "Describe this image with details on the person's body position, face, clothes, "
-                        "and a little background information."
+                        "Describe this image with details on the person's body position, face, clothes, and a little background information."
                     ),
                 },
             ],
