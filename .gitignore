@@ -3,3 +3,6 @@ parser/__pycache__/
 fake_dataset/
 watermark-detection/
 model_weights/
+IP-Adapter/
+models/
+sdxl_models/
