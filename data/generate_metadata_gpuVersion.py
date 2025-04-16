@@ -93,7 +93,7 @@ for image_path in image_files:
     )[0]
 
     file_name = os.path.basename(image_path)
-    metadata.append({"file_name": file_name, "text": output_text})
+    metadata.append({"image_file": file_name, "text": output_text})
     print(f"Processed {file_name}")
 
 output_file = "metadata.jsonl"

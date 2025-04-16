@@ -9,6 +9,7 @@ BASE_DATASET_PATH = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/d
 
 delete_count_folder = 0
 total_count_folder = 0
+count_images = 0
 # Получаем список всех папок в BASE_DATASET_PATH
 for folder_name in os.listdir(BASE_DATASET_PATH):
     folder_path = os.path.join(BASE_DATASET_PATH, folder_name)
@@ -23,6 +24,7 @@ for folder_name in os.listdir(BASE_DATASET_PATH):
                 and f.lower().endswith(".jpg")
             ]
         )
+        count_images += num_images
         if num_images < 100:
             delete_count_folder += 1
             print(f"{folder_name}: {num_images} изображений")
@@ -31,3 +33,4 @@ for folder_name in os.listdir(BASE_DATASET_PATH):
 print(
     f"Удалено {delete_count_folder} папок. Осталось {total_count_folder - delete_count_folder}."
 )
+print(f"Всего изображений {count_images}.")
