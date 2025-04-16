@@ -6,3 +6,4 @@ model_weights/
 IP-Adapter/
 models/
 sdxl_models/
+output_dir/
