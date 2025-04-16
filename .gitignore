@@ -7,3 +7,4 @@ IP-Adapter/
 models/
 sdxl_models/
 output_dir/
+data/metadata.jsonl
