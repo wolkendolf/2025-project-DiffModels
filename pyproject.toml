@@ -11,6 +11,7 @@ dependencies = [
     "einops==0.7.0",
     "huggingface-hub>=0.30.2",
     "ip-adapter",
+    "ipykernel>=6.29.5",
     "jsonlines>=4.0.0",
     "matplotlib>=3.10.1",
     "numpy>=2.2.4",
