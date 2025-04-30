@@ -5,7 +5,7 @@ import shutil
 При необходимости проверить, что картинок в каждой папке не меньше какого-то порога
 """
 
-BASE_DATASET_PATH = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/dataset"
+BASE_DATASET_PATH = "/data/kazachkovda/2025_ipAdap_image"
 
 delete_count_folder = 0
 total_count_folder = 0

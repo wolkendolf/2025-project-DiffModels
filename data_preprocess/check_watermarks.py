@@ -6,7 +6,7 @@ from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 sys.path.append(
-    "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/watermark-detection"
+    "/home/kazachkovda/2025-project-DiffModels/data_preprocess/watermark-detection"
 )
 
 from wmdetection.models import get_watermarks_detection_model
@@ -15,15 +15,15 @@ from wmdetection.pipelines.predictor import WatermarksPredictor
 """
 Необходимо установить зависимости из репозитория
 https://github.com/boomb0om/watermark-detection/tree/main
-Запуск из папки data.
+Запуск из папки data_preprocess.
 """
 
 
 # Базовый путь к датасету
 BASE_DATASET_PATH = (
-    "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/dataset"
+    "/data/kazachkovda/2025_ipAdap_image"
 )
-device = 'cuda:7'
+device = 'cuda:3'
 
 # Функция для получения списка всех изображений
 def get_all_images(base_path):
@@ -60,7 +60,7 @@ model, transforms = get_watermarks_detection_model(
     "convnext-tiny",
     device=device,
     fp16=False,
-    cache_dir="/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/watermark-detection/weights",  # Укажите путь для кэша весов
+    cache_dir="/home/kazachkovda/2025-project-DiffModels/weights/watermarks",  # Укажите путь для кэша весов
 )
 predictor = WatermarksPredictor(
     model, transforms, device

@@ -3,15 +3,15 @@ from huggingface_hub import hf_hub_download
 from ultralytics import YOLO
 
 # Путь к вашему датасету
-BASE_DATASET_PATH = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/dataset"
-model_path = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/model_weights/yolo_nface.pt"
+BASE_DATASET_PATH = "/data/kazachkovda/2025_ipAdap_image"
+model_path = "/home/kazachkovda/2025-project-DiffModels/weights/number_faces/yolo_nface.pt"
 
 # Загрузка модели
 if os.path.exists(model_path):
     print("Веса уже загружены.")
 else:
     print("Скачиваем веса...")
-    model_path = hf_hub_download(repo_id="AdamCodd/YOLOv11n-face-detection", filename="yolo_nface.pt", local_dir="/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/model_weights")
+    model_path = hf_hub_download(repo_id="AdamCodd/YOLOv11n-face-detection", filename="model.pt", local_dir="/home/kazachkovda/2025-project-DiffModels/weights/number_faces")
 model = YOLO(model_path)
 
 # Функция для проверки количества лиц на изображении

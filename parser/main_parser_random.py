@@ -1,11 +1,11 @@
 import os
 import time
-import parser.parsing_helper_random as parsing_helper
+import parsing_helper_random as parsing_helper
 import requests
 from bs4 import BeautifulSoup
 import random
 
-BASE_DATASET_PATH = "/home/jovyan/nkiselev/kazachkovda/2025-project-DiffModels/dataset"
+BASE_DATASET_PATH = "/data/kazachkovda/2025_ipAdap_image"
 
 """
 start with command python -m parser.main_parser_random from 2025-project-diffmodels folder

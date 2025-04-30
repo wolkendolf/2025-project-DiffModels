@@ -5,6 +5,8 @@ watermark-detection/
 model_weights/
 IP-Adapter/
 models/
+weights/
 sdxl_models/
 output_dir/
-data/metadata.jsonl
+data_preprocess/metadata.jsonl
+data_preprocess/watermark-detection
