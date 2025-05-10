@@ -1,0 +1,1 @@
+python script.py --data_dir "/data/kazachkovda/2025_ipAdap_image/" --output_dir "../../figures" --json "../../data_preprocess/metadata.jsonl" --num_images 4

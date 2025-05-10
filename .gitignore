@@ -10,3 +10,4 @@ sdxl_models/
 output_dir/
 data_preprocess/metadata.jsonl
 data_preprocess/watermark-detection
+metadata_jsons/
