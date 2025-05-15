@@ -10,9 +10,9 @@
 |____personN.jpg
 |__next_person
 |____next_person1.jpg
-|____next_person1.jpg
+|____next_person2.jpg
 |____ ....
-|____next_person1.jpg
+|____next_personM.jpg
 |__ ....
 ```
 
